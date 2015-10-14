@@ -1,3 +1,17 @@
+//---------------------------------------------
+// GLOBAL VARIABLES
+//---------------------------------------------
+var $timer = $('#timer'),
+    time = 2 * 60,
+    formattedTime = formatTime(time*1000),
+    formattedTickedTime = [],
+    Game = {},
+    cards = [],
+    timer;
+
+//---------------------------------------------
+// FUNCTION HELPERS
+//---------------------------------------------
 function shuffle(array) {
   var currentIndex = array.length, temporaryValue, randomIndex ;
 
@@ -17,30 +31,48 @@ function shuffle(array) {
   return array;
 }
 
-var Game = {
+function formatTime(millisec) {
+  var min = parseInt(millisec / 60000,10),
+      sec = Math.round(millisec / 1000) % 60;
+  if (sec < 10) {
+    sec = '0' + sec;
+  }
+  return [min, sec];
+}
 
+function displayTimer(time) {
+  $timer.html('<span>'+time[0]+':'+time[1]+'</span>');
+}
+
+//---------------------------------------------
+// OBJECTS
+//---------------------------------------------
+Game = {
   cards: [],
   pickedCard: null,
   cardCounter: 0,
+  attempts: 0,
   init: function(cards) {
     this.resetProps();
     this.setCards(cards);
     this.placeCards(this.cards);
     this.attachEvent();
     this.attachJqueryFlip();
+    this.updateAttemptsDOM(0);
   },
   resetProps: function(){
     $('#game-container').html('');
     this.pickedCard = null;
     this.cardCounter = 0;
+    this.attempts = 0;
   },    
-  canPick: true,
+  canPick: false,
   setCards: function(cards) {
     var newCardArrays = $.merge([], cards),
         mergedCardArrays = $.merge(newCardArrays, newCardArrays);
 
-    this.cardCounter = mergedCardArrays.length;
     this.cards = shuffle(mergedCardArrays);
+    this.cardCounter = mergedCardArrays.length;
   },
   placeCards: function(cards) {
     for(var i=0;i<cards.length;i++) {
@@ -48,6 +80,9 @@ var Game = {
         '<div class="card" data-name='+cards[i].name+'><div></div><div><img src='+cards[i].img+'></div></div>'    
       );
     }
+  },
+  updateAttemptsDOM: function(attempts) {
+    $('#no_of_attempts').html(attempts);
   },
   attachEvent: function() {
     var self = this;
@@ -60,6 +95,7 @@ var Game = {
           self.pickedCard = null;
           self.cardCounter -= 2;
           if(self.cardCounter === 0) {
+            timer.stop();
             alert('you win!');
           }
         } else {
@@ -69,6 +105,8 @@ var Game = {
             $(self.pickedCard).flip(false);
             self.pickedCard = null;
             self.canPick = true;
+            self.attempts += 1;
+            self.updateAttemptsDOM(self.attempts);
           }.bind(this),500);
         }
       }
@@ -80,73 +118,107 @@ var Game = {
       trigger: 'manual'
     });
   }
-
 };
 
-var cards = [
-		{
-			name: "php",
-			img: "assets/php-logo_1.png",
-			id: 1,
-		},
-		{
-			name: "css3",
-			img: "assets/css3-logo.png",
-			id: 2
-		},
-		{
-			name: "html5",
-			img: "assets/html5-logo.png",
-			id: 3
-		},
-		{
-			name: "jquery",
-			img: "assets/jquery-logo.png",
-			id: 4
-		}, 
-		{
-			name: "javascript",
-			img: "assets/js-logo.png",
-			id: 5
-		},
-		{
-			name: "node",
-			img: "assets/nodejs-logo.png",
-			id: 6
-		},
-		{
-			name: "photoshop",
-			img: "assets/photoshop-logo.png",
-			id: 7
-		},
-		{
-			name: "python",
-			img: "assets/python-logo.png",
-			id: 8
-		},
-		{
-			name: "rails",
-			img: "assets/rails-logo.png",
-			id: 9
-		},
-		{
-			name: "sass",
-			img: "assets/sass-logo.png",
-			id: 10
-		},
-		{
-			name: "sublime",
-			img: "assets/sublime-logo.png",
-			id: 11
-		},
-		{
-			name: "wordpress",
-			img: "assets/wordpress-logo.png",
-			id: 12
-		},
-	];
+cards = [
+  {
+    name: "php",
+    img: "assets/php-logo_1.png",
+    id: 1,
+  },
+  {
+    name: "css3",
+    img: "assets/css3-logo.png",
+    id: 2
+  },
+  {
+    name: "html5",
+    img: "assets/html5-logo.png",
+    id: 3
+  },
+  {
+    name: "jquery",
+    img: "assets/jquery-logo.png",
+    id: 4
+  }, 
+  {
+    name: "javascript",
+    img: "assets/js-logo.png",
+    id: 5
+  },
+  {
+    name: "node",
+    img: "assets/nodejs-logo.png",
+    id: 6
+  },
+  {
+    name: "photoshop",
+    img: "assets/photoshop-logo.png",
+    id: 7
+  },
+  {
+    name: "python",
+    img: "assets/python-logo.png",
+    id: 8
+  },
+  {
+    name: "rails",
+    img: "assets/rails-logo.png",
+    id: 9
+  },
+  {
+    name: "sass",
+    img: "assets/sass-logo.png",
+    id: 10
+  },
+  {
+    name: "sublime",
+    img: "assets/sublime-logo.png",
+    id: 11
+  },
+  {
+    name: "wordpress",
+    img: "assets/wordpress-logo.png",
+    id: 12
+  },
+];
 
+timer = new Timer({
+  tick: 1,
+  ontick: function(millisec) {
+    formattedTickedTime = formatTime(millisec);
+    $timer.html('<span>'+formattedTickedTime[0]+':'+formattedTickedTime[1]+'</span>');
+  },
+  onstart: function() {
+    Game.canPick = true;
+    console.log('timer started');
+  },
+  onstop: function(){
+    console.log('timer stopped');
+  },
+  onend: function() {
+    console.log('timer finished');
+    Game.canPick = false;
+    $timer.html('<span>Time finished!</span>');
+  }
+});
+
+//---------------------------------------------
+// EVENT HANDLERS
+//---------------------------------------------
+$('#start-button').on('click', function(){
+  timer.start(time);
+});
+
+$('#reset-button').on('click', function(){
+  timer.stop();
+  displayTimer(formattedTime);
+  Game.init(cards);
+  timer.start(time);
+});
+
+//---------------------------------------------
+// INITIALIZERS
+//---------------------------------------------
 Game.init(cards);
-
-// can only start play the game after click the start button
-Game.canPick = false;
+displayTimer(formattedTime);
