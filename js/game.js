@@ -27,6 +27,7 @@ var Game = {
     this.setCards(cards);
     this.placeCards(this.cards);
     this.attachEvent();
+    this.attachJqueryFlip();
   },
   resetProps: function(){
     $('#game-container').html('');
@@ -44,7 +45,7 @@ var Game = {
   placeCards: function(cards) {
     for(var i=0;i<cards.length;i++) {
       $('#game-container').append(
-        '<div class="card" data-name='+cards[i].name+'><img src='+cards[i].img+'></div>'    
+        '<div class="card" data-name='+cards[i].name+'><div></div><div><img src='+cards[i].img+'></div></div>'    
       );
     }
   },
@@ -52,7 +53,7 @@ var Game = {
     var self = this;
     $('#game-container').on('click', '.card', function(){
       if(self.canPick && self.pickedCard !== this ) {
-        $(this).find('img').addClass('selected');
+        $(this).flip(true);
         if(!self.pickedCard) {
           self.pickedCard = this;
         } else if($(self.pickedCard).data('name') === $(this).data('name')) {
@@ -64,13 +65,19 @@ var Game = {
         } else {
           self.canPick = false;
           setTimeout( function() {
-            $(this).find('img').removeClass('selected');
-            $(self.pickedCard).find('img').removeClass('selected');
+            $(this).flip(false);
+            $(self.pickedCard).flip(false);
             self.pickedCard = null;
             self.canPick = true;
           }.bind(this),500);
         }
       }
+    });
+  },
+  attachJqueryFlip: function(){
+    // Attach manual jQuery flip event to all cards
+    $(".card").flip({
+      trigger: 'manual'
     });
   }
 
@@ -140,3 +147,6 @@ var cards = [
 	];
 
 Game.init(cards);
+
+// can only start play the game after click the start button
+Game.canPick = false;

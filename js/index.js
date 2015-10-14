@@ -28,3 +28,5 @@ var timer = new Timer({
 
 timer.start(time);
 $timer.html('<span>'+formattedTime[0]+':'+formattedTime[1]+'</span>');
+
+$('#start-button');

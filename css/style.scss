@@ -9,14 +9,12 @@
 
 .card {
   width: 16.6666666667%;
+  height: 6rem;
   border: 1px solid black;
 
   img {
     width: 100%;
-    visibility: hidden;
-    &.selected {
-      visibility: visible;
-    }
+    height: 100%;
   }
 
 }

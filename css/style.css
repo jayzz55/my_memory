@@ -13,9 +13,8 @@
 
 .card {
   width: 16.6666666667%;
+  height: 6rem;
   border: 1px solid black; }
   .card img {
     width: 100%;
-    visibility: hidden; }
-    .card img.selected {
-      visibility: visible; }
+    height: 100%; }
