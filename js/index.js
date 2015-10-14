@@ -18,15 +18,18 @@ var timer = new Timer({
     $timer.html('<span>'+formattedTime[0]+':'+formattedTime[1]+'</span>');
   },
   onstart: function() {
+    Game.canPick = true;
     console.log('timer started');
   },
   onend: function() {
     console.log('timer stopped');
+    Game.canPick = false;
     $timer.html('<span>Time finished!</span>');
   }
 });
 
-timer.start(time);
 $timer.html('<span>'+formattedTime[0]+':'+formattedTime[1]+'</span>');
 
-$('#start-button');
+$('#start-button').on('click', function(){
+  timer.start(time);
+});
