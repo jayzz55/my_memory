@@ -1,0 +1,24 @@
+* {
+  box-sizing: border-box;
+}
+#game-container {
+  width: 100%;
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.card {
+  width: 16.6666666667%;
+  border: 1px solid black;
+
+  img {
+    width: 100%;
+    visibility: hidden;
+    &.selected {
+      visibility: visible;
+    }
+  }
+
+}
+
+
