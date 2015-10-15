@@ -78,7 +78,7 @@ Game = {
   placeCards: function(cards) {
     for(var i=0;i<cards.length;i++) {
       $('#game-container').append(
-        '<div class="card" data-name='+cards[i].name+'><div></div><div><img src='+cards[i].img+'></div></div>'    
+        '<div class="card"><div></div><div><img src='+cards[i].img+'></div></div>'    
       );
     }
   },
@@ -92,10 +92,9 @@ Game = {
         $(this).flip(true);
         if(!self.pickedCard) {
           self.pickedCard = this;
-        } else if($(self.pickedCard).data('name') === $(this).data('name')) {
+        } else if($(self.pickedCard).find('img').attr('src') === $(this).find('img').attr('src')) {
           self.pickedCard = null;
           self.cardCounter -= 2;
-          console.log(self.pickedCard);
           if(self.cardCounter === 0) {
             timer.stop();
             alert('you win!');
