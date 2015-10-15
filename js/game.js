@@ -97,7 +97,13 @@ Game = {
           self.cardCounter -= 2;
           if(self.cardCounter === 0) {
             timer.stop();
-            alert('you win!');
+            // check if cheating
+            var tickedTimeSec = (formattedTickedTime[0] * 60) + formattedTickedTime[1];
+            if(Game.attempts < 6 || ( time - tickedTimeSec <= 10)) {
+              alert('you cheated!');
+            } else {
+              alert('you win!');
+            }
           }
         } else {
           self.canPick = false;
