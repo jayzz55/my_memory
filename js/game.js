@@ -62,6 +62,7 @@ Game = {
   },
   resetProps: function(){
     $('#game-container').html('');
+    $('#game-container').off('click');
     this.pickedCard = null;
     this.cardCounter = 0;
     this.attempts = 0;
@@ -94,6 +95,7 @@ Game = {
         } else if($(self.pickedCard).data('name') === $(this).data('name')) {
           self.pickedCard = null;
           self.cardCounter -= 2;
+          console.log(self.pickedCard);
           if(self.cardCounter === 0) {
             timer.stop();
             alert('you win!');
